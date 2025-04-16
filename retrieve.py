@@ -9,7 +9,7 @@ from bert4keras.tokenizers import Tokenizer
 from bert4keras.snippets import sequence_padding
 
 import json
-
+import os
 
 
 def most_similar(text, topn=10):
@@ -45,7 +45,8 @@ def most_similar(text, topn=10):
     with open("test.json", "r") as f:
         data = json.load(f)
 
-    for wav_id, desc in data.items():
+    for wav_id, info in data.items():
+        desc = info["description"]
         token_id = tokenizer.encode(desc, max_length=maxlen)[0]
         token_ids.append(token_id)
         items.append((wav_id, desc))
@@ -82,4 +83,8 @@ def most_similar(text, topn=10):
 if __name__=="__main__":
     result = most_similar(u'中年女子的音调低沉，音量适中，语速慢慢地。', 20)
     print(result)
+    if len(result) > 0:
+        audio_id = result[0][0][0]
+        audio_path = os.path.join("/home/group3/workspace/wsl/datasets/cut_wav", audio_id+".wav")
+        print(audio_path)
     
