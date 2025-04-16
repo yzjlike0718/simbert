@@ -14,7 +14,13 @@
 详细介绍请看：[https://kexue.fm/archives/7427](https://kexue.fm/archives/7427)
 
 ## 训练环境
-tensorflow 1.14 + keras 2.3.1 + bert4keras 0.7.7
+```bash
+conda create -n simbert python=3.6 -y
+conda activate simbert
+pip install tensorflow==1.14
+pip install bert4keras==0.7.7
+pip install keras==2.3.1
+```
 
 ## 如何引用
 

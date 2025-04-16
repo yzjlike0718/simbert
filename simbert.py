@@ -25,9 +25,9 @@ epochs = 10000
 corpus_path = 'data_sample.json'
 
 # bert配置
-config_path = '/root/kg/bert/chinese_L-12_H-768_A-12/bert_config.json'
-checkpoint_path = '/root/kg/bert/chinese_L-12_H-768_A-12/bert_model.ckpt'
-dict_path = '/root/kg/bert/chinese_L-12_H-768_A-12/vocab.txt'
+config_path = 'chinese_L-12_H-768_A-12/bert_config.json'
+checkpoint_path = 'chinese_L-12_H-768_A-12/bert_model.ckpt'
+dict_path = 'chinese_L-12_H-768_A-12/vocab.txt'
 
 # 加载并精简词表，建立分词器
 token_dict, keep_tokens = load_vocab(
