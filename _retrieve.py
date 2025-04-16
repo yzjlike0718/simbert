@@ -10,11 +10,15 @@ from bert4keras.snippets import sequence_padding
 
 import json
 
-
-
 def most_similar(text, topn=10):
     """检索最相近的topn个句子
     """
+    gender = None
+    if "女" in text:
+        gender = "女"
+    elif "男" in text:
+        gender = "男"
+    print(f"gender: {gender}")
     
     # bert配置
     config_path = 'chinese_simbert_L-12_H-768_A-12/bert_config.json'
@@ -52,34 +56,26 @@ def most_similar(text, topn=10):
 
     token_ids = sequence_padding(token_ids)
     vecs = encoder.predict([token_ids, np.zeros_like(token_ids)], verbose=True)
-
     vecs = vecs / (vecs**2).sum(axis=1, keepdims=True)**0.5
     vecs = vecs.reshape(-1, 768)
     
-    # 当前 prompt
     token_ids, segment_ids = tokenizer.encode(text, max_length=maxlen)
     vec = encoder.predict([[token_ids], [segment_ids]])[0]
     vec /= (vec**2).sum()**0.5
-    sims = np.dot(vecs, vec)
-    topn_result = [(items[i], sims[i]) for i in sims.argsort()[::-1][:topn]]
-    
-    gender = None
-    if "女" in text:
-        gender = "女"
-    elif "男" in text:
-        gender = "男"
-    print(f"gender: {gender}")
-    
+    sims = np.dot(vecs, vec).argsort()[::-1]
+    print(sims[:5])
     if gender is not None:
         ret = []
-        for _, (item, sim) in enumerate(topn_result):
-            if gender in item[1]:
-                ret.append(topn_result[_])
+        for _, sim in enumerate(sims):
+            if gender in items[_][1]:
+                ret.append((items[_], sim))
+                if len(ret) == topn:
+                    break
         return ret
     else:
-        return topn_result
+        return [(items[i], sims[i]) for i in sims[:topn]]
 
 if __name__=="__main__":
-    result = most_similar(u'中年女子的音调低沉，音量适中，语速慢慢地。', 20)
+    result = most_similar(u'中年男子的音调高亢，音量适中，语速慢慢地。', 20)
     print(result)
     
