@@ -10,9 +10,10 @@ from bert4keras.snippets import sequence_padding
 
 import json
 import os
+import subprocess
 
 
-def most_similar(text, topn=10):
+def most_similar(text, database, topn=10):
     """检索最相近的topn个句子
     """
     
@@ -42,7 +43,7 @@ def most_similar(text, topn=10):
     items = []
     # 读取数据
     # with open("/home/group3/workspace/wsl/datasets/dbpara_test_4k_simplified.json", "r") as f:
-    with open("test.json", "r") as f:
+    with open(database, "r") as f:
         data = json.load(f)
 
     for wav_id, info in data.items():
@@ -69,7 +70,6 @@ def most_similar(text, topn=10):
         gender = "女"
     elif "男" in text:
         gender = "男"
-    print(f"gender: {gender}")
     
     if gender is not None:
         ret = []
@@ -80,11 +80,33 @@ def most_similar(text, topn=10):
     else:
         return topn_result
 
-if __name__=="__main__":
-    result = most_similar(u'中年女子的音调低沉，音量适中，语速慢慢地。', 20)
-    print(result)
-    if len(result) > 0:
-        audio_id = result[0][0][0]
-        audio_path = os.path.join("/home/group3/workspace/wsl/datasets/cut_wav", audio_id+".wav")
-        print(audio_path)
+def main():
+    # 参数设置
+    database = "test.json"
+    query_text = "中年女子的音调低沉，音量适中，语速慢慢地。"
+    top_n = 20
+    wav_base_path = "/home/group3/workspace/wsl/datasets/cut_wav"
+    f5_path = "/home/group3/workspace/wsl/F5-TTS/src/f5_tts/infer"
     
+    # 查询最相似的结果
+    result = most_similar(query_text, database, top_n)
+    print(f"retrieval result:\n{result}\n")
+    
+    if len(result) > 0:
+        # 获取最佳匹配的音频ID和路径
+        audio_id = result[0][0][0]
+        audio_path = os.path.join(wav_base_path, f"{audio_id}.wav")
+        
+        # 获取转录文本
+        with open(database, "r") as f:
+            data = json.load(f)
+        transcription = data[audio_id]["transcription"]
+
+        gen_text = "Some text you want TTS model generate for you."
+        
+        cmd = f"cd {f5_path}\npython infer_cli.py --model F5TTS_v1_Base --ref_audio {audio_path} --ref_text '{transcription}' --gen_text '{gen_text}'"
+        print(f"cmd:\n{cmd}")
+
+
+if __name__ == "__main__":
+    main()
