@@ -20,6 +20,7 @@ conda activate simbert
 pip install tensorflow==1.14
 pip install bert4keras==0.7.7
 pip install keras==2.3.1
+pip install pandas pyarrow
 ```
 
 ## 如何引用
