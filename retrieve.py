@@ -42,7 +42,6 @@ def most_similar(text, database, topn=10):
     token_ids = []
     items = []
     # 读取数据
-    # with open("/home/group3/workspace/wsl/datasets/dbpara_test_4k_simplified.json", "r") as f:
     with open(database, "r") as f:
         data = json.load(f)
 
@@ -85,8 +84,8 @@ def main():
     database = "test.json"
     query_text = "中年女子的音调低沉，音量适中，语速慢慢地。"
     top_n = 20
-    wav_base_path = "/home/group3/workspace/wsl/datasets/cut_wav"
-    f5_path = "/home/group3/workspace/wsl/F5-TTS/src/f5_tts/infer"
+    wav_base_path = "/home/group3/wsl/datasets/cut_wav"
+    f5_path = "/home/group3/wsl/F5-TTS/src/f5_tts/infer"
     
     # 查询最相似的结果
     result = most_similar(query_text, database, top_n)

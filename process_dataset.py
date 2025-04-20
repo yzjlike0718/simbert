@@ -24,7 +24,7 @@ def process_dbpara(filepath):
 
 
 if __name__ == "__main__":
-    dir = "/home/group3/workspace/wsl/datasets"
+    dir = "/home/group3/wsl/datasets"
     
     data = {}
 
